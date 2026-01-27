@@ -1,199 +1,978 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Gerencia de Sistemas de Información</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700&display=swap" rel="stylesheet">
+    <title>Arquitectura de Software</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Open Sans', sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
-
+        
         body {
-            background-color: #f3f3f3;
-            color: #333;
+            background: linear-gradient(135deg, #0a1628 0%, #1a365d 50%, #0d2137 100%);
+            min-height: 100vh;
         }
-
-        header {
-            background: linear-gradient(to right, #0a74da, #1e3c72);
-            color: white;
-            text-align: center;
-            padding: 40px 20px;
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-
-        nav {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 10px;
+        
+        .week-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
+        
+        .week-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(59, 130, 246, 0.4);
         }
-
-        .contenedor {
-            width: 80%;
-            margin: 40px auto;
-            padding: 20px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        
+        .floating {
+            animation: floating 3s ease-in-out infinite;
         }
-
-        .titulo {
-            text-align: center;
-            color: #0a74da;
-            margin-bottom: 20px;
+        
+        @keyframes floating {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
         }
-
-        .galeria-port {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
+        
+        .pulse-glow {
+            animation: pulseGlow 2s ease-in-out infinite;
         }
-
-        .imagen-port {
-            position: relative;
-            overflow: hidden;
-            border-radius: 10px;
+        
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(59, 130, 246, 0.6); }
         }
-
-        .imagen-port img {
-            width: 100%;
-            display: block;
-            border-radius: 10px;
+        
+        .slide-in {
+            animation: slideIn 0.6s ease-out forwards;
+            opacity: 0;
+            transform: translateY(30px);
         }
-
-        .hover-galeria {
-            position: absolute;
+        
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .gradient-text {
+            background: linear-gradient(90deg, #60a5fa, #a78bfa, #60a5fa);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientFlow 3s linear infinite;
+        }
+        
+        @keyframes gradientFlow {
+            to { background-position: 200% center; }
+        }
+        
+        .particles {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(10, 116, 218, 0.7);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
         }
-
-        .imagen-port:hover .hover-galeria {
-            opacity: 1;
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(96, 165, 250, 0.5);
+            border-radius: 50%;
+            animation: rise 10s infinite;
         }
-
-        .cards {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            gap: 20px;
+        
+        @keyframes rise {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-10vh) scale(1);
+                opacity: 0;
+            }
         }
-
-        .card {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            width: 300px;
-        }
-
-        .card img {
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            border-radius: 10px;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            animation: scaleIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        @keyframes scaleIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        
+        .nav-link {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #60a5fa, #a78bfa);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .icon-box {
+            transition: all 0.3s ease;
+        }
+        
+        .week-card:hover .icon-box {
+            transform: rotate(360deg) scale(1.1);
         }
 
-        footer {
-            background: #0a74da;
-            color: white;
-            text-align: center;
-            padding: 20px 10px;
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #1a365d;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #3b82f6;
+            border-radius: 4px;
         }
     </style>
 </head>
-
-<body>
-    <header>
-        <h1>Gerencia de Sistemas de Información</h1>
-        <nav> 
-            <a href="#sobre-nosotros">Inicio</a>
-            <a href="#portafolio">Semanas</a>
-            <a href="#about-services">Información</a>
-            <a href="#clientes">Capacidades</a>
-        </nav>
-    </header>
+<body class="text-white">
+    <!-- Particles Background -->
+    <div class="particles" id="particles"></div>
     
-    <main>
-
-        <section id="about-services" class="contenedor">
-            <h2 class="titulo">Inicio</h2>
-            <p>La asignatura corresponde a estudios de especialidad, de naturaleza teórico-práctica, cuyo propósito es gerenciar un marco de trabajo para el buen gobierno y la gestión de las tecnologías de la información (TI) y la tecnología de la empresa. Que le permite adquirir las siguientes capacidades: conoce la administración y la empresa en la nube, infraestructura de TI y tecnologías emergentes, genera la obtención de la excelencia operacional e intimidad con el cliente: aplicaciones empresariales, identifica la infraestructura de la Tecnología de la Información, propone la creación de sistemas de información. </p>
-        </section>
-
-        <section id="portafolio" class="contenedor">
-            <h2 class="titulo">Semanas</h2>
-            <div class="galeria-port">
-                <div class="imagen-port"><img src="img2/img1.jpg" alt=""><a href="venta1/index.html"><div class="hover-galeria"><p>Semana 1</p></div></a></div>
-                <div class="imagen-port"><img src="img2/img2.png" alt=""><a href="venta2/index.html"><div class="hover-galeria"><p>Semana 2</p></div></a></div>
-                <div class="imagen-port"><img src="img2/img3.jpg" alt=""><a href="venta3/index.html"><div class="hover-galeria"><p>Semana 3</p></div></a></div>
-                <div class="imagen-port"><img src="img2/img4.jpg" alt=""><a href="venta4/index.html"><div class="hover-galeria"><p>Semana 4</p></div></a></div>
-                <div class="imagen-port"><img src="img2/img5.jpg" alt=""><a href="venta5/index.html"><div class="hover-galeria"><p>Semana 5</p></div></a></div>
-                <div class="imagen-port"><img src="img2/img6.png" alt=""><a href="venta6/index.html"><div class="hover-galeria"><p>Semana 6</p></div></a></div>
-                <div class="imagen-port"><img src="img2/img7.jpg" alt=""><a href="venta7/index.html"><div class="hover-galeria"><p>Semana 7</p></div></a></div>
-                <div class="imagen-port"><img src="img2/img8.jpg" alt=""><a href="venta8/index.html"><div class="hover-galeria"><p>Semana 8</p></div></a></div>
-                <div class="imagen-port"><img src="img2/img9.jpg" alt=""><a href="venta9/index.html"><div class="hover-galeria"><p>Semana 9</p></div></a></div>
-                <div class="imagen-port"><img src="img2/img10.jpg" alt=""><a href="venta10/index.html"><div class="hover-galeria"><p>Semana 10</p></div></a></div>
-                <!-- <div class="imagen-port"><img src="img2/img11.jpg" alt=""><a href="venta11/index.html"><div class="hover-galeria"><p>Semana 11</p></div></a></div>
-                <div class="imagen-port"><img src="img2/img12.jpg" alt=""><a href="venta12/index.html"><div class="hover-galeria"><p>Semana 12</p></div></a></div>
-                <div class="imagen-port"><img src="img2/img13.png" alt=""><a href="venta13/index.html"><div class="hover-galeria"><p>Semana 13</p></div></a></div>
-                <div class="imagen-port"><img src="img2/img14.png" alt=""><a href="venta14/index.html"><div class="hover-galeria"><p>Semana 14</p></div></a></div>
-                <div class="imagen-port"><img src="img2/img15.png" alt=""><a href="venta15/index.html"><div class="hover-galeria"><p>Semana 15</p></div></a></div>
-                <div class="imagen-port"><img src="img2/img16.jpg" alt=""><a href="venta16/index.html"><div class="hover-galeria"><p>Semana 16</p></div></a></div> -->
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 glass-card">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center pulse-glow">
+                        <i class="fas fa-cubes text-xl"></i>
+                    </div>
+                    <span class="text-xl font-bold gradient-text">Arquitectura de Software</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#inicio" class="nav-link py-2 hover:text-blue-400 transition">Inicio</a>
+                    <a href="#temas" class="nav-link py-2 hover:text-blue-400 transition">Temas</a>
+                    <a href="#recursos" class="nav-link py-2 hover:text-blue-400 transition">Recursos</a>
+                    <a href="#contacto" class="nav-link py-2 hover:text-blue-400 transition">Contacto</a>
+                </div>
+                <button id="menuBtn" class="md:hidden text-2xl">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
-        </section>
-
-        <section id="about-services" class="contenedor">
-            <h2 class="titulo">Información</h2>
-            <p>La Gerencia de Sistemas de Información estudia el uso estratégico de la tecnología en las organizaciones, enfocándose en la planificación, implementación y gestión de sistemas de información para mejorar la toma de decisiones y la competitividad empresarial.</p>
-        </section>
-
-        <section id="clientes" class="contenedor">
-            <h2 class="titulo">Capacidades</h2>
-            <div class="cards">
-                <div class="card">
-                    <h4>Gestión Estratégica</h4>
-                    <p>Desarrollo y dirección de estrategias para la gestión de la información en empresas.</p>
-                </div>
-                <div class="card">
-                    <h4>Innovación Tecnológica</h4>
-                    <p>Identificación y aplicación de tecnologías emergentes para optimizar procesos.</p>
-                </div>
-                <div class="card">
-                    <h4>Toma de Decisiones</h4>
-                    <p>Uso de herramientas de análisis de datos para la mejora del desempeño organizacional.</p>
-                </div>
-                <div class="card">
-                    <h4>Seguridad de la Información</h4>
-                    <p>Implementación de políticas y controles para garantizar la integridad de los datos.</p>
+        </div>
+    </nav>
+    
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="fixed inset-0 z-40 bg-slate-900/95 hidden pt-20">
+        <div class="flex flex-col items-center space-y-6 py-8">
+            <a href="#inicio" class="text-xl hover:text-blue-400 transition" onclick="closeMobileMenu()">Inicio</a>
+            <a href="#temas" class="text-xl hover:text-blue-400 transition" onclick="closeMobileMenu()">Temas</a>
+            <a href="#recursos" class="text-xl hover:text-blue-400 transition" onclick="closeMobileMenu()">Recursos</a>
+            <a href="#contacto" class="text-xl hover:text-blue-400 transition" onclick="closeMobileMenu()">Contacto</a>
+        </div>
+    </div>
+    
+    <!-- Hero Section -->
+    <section id="inicio" class="min-h-screen flex items-center justify-center relative pt-20">
+        <div class="container mx-auto px-6 text-center relative z-10">
+            <div class="floating mb-8">
+                <div class="w-32 h-32 mx-auto bg-gradient-to-br from-blue-500 via-purple-500 to-cyan-500 rounded-3xl flex items-center justify-center shadow-2xl">
+                    <i class="fas fa-building text-5xl"></i>
                 </div>
             </div>
-        </section>
-    </main>
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 slide-in">
+                <span class="gradient-text">Arquitectura de Software</span>
+            </h1>
+            <p class="text-xl md:text-2xl text-blue-200 mb-8 max-w-3xl mx-auto slide-in" style="animation-delay: 0.2s">
+                Tu guía completa sobre fundamentos, patrones y mejores prácticas para diseñar sistemas de software robustos, escalables y mantenibles
+            </p>
+            <div class="flex flex-wrap justify-center gap-4 slide-in" style="animation-delay: 0.4s">
+                <a href="#temas" class="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full font-semibold hover:from-blue-700 hover:to-purple-700 transition transform hover:scale-105 shadow-lg">
+                    <i class="fas fa-compass mr-2"></i>Explorar Temas
+                </a>
+                <a href="#recursos" class="px-8 py-4 glass-card rounded-full font-semibold hover:bg-white/10 transition">
+                    <i class="fas fa-book mr-2"></i>Ver Recursos
+                </a>
+            </div>
+            
+            <!-- Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 max-w-4xl mx-auto">
+                <div class="glass-card rounded-2xl p-6 slide-in" style="animation-delay: 0.5s">
+                    <div class="text-4xl font-bold text-blue-400">16</div>
+                    <div class="text-blue-200">Semanas</div>
+                </div>
+                <div class="glass-card rounded-2xl p-6 slide-in" style="animation-delay: 0.6s">
+                    <div class="text-4xl font-bold text-purple-400">4</div>
+                    <div class="text-blue-200">Áreas</div>
+                </div>
+                <div class="glass-card rounded-2xl p-6 slide-in" style="animation-delay: 0.7s">
+                    <div class="text-4xl font-bold text-cyan-400">50+</div>
+                    <div class="text-blue-200">Conceptos</div>
+                </div>
+                <div class="glass-card rounded-2xl p-6 slide-in" style="animation-delay: 0.8s">
+                    <div class="text-4xl font-bold text-pink-400">100+</div>
+                    <div class="text-blue-200">Referencias</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <i class="fas fa-chevron-down text-3xl text-blue-400"></i>
+        </div>
+    </section>
     
-    <footer>
-        <p>&copy; 2025 | Gerencia de Sistemas de Información | Tang Ramos Felipe</p>
+    <!-- Topics Section -->
+    <section id="temas" class="py-20 relative z-10">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                    <span class="gradient-text">Semanas de Estudio</span>
+                </h2>
+                <p class="text-xl text-blue-200 max-w-2xl mx-auto">
+                    Explora 16 semanas de contenido organizadas en 4 áreas de conocimiento
+                </p>
+            </div>
+            
+            <!-- Module Tabs -->
+            <div class="flex flex-wrap justify-center gap-4 mb-12">
+                <button onclick="filterWeeks('all')" class="filter-btn active px-6 py-3 rounded-full glass-card hover:bg-blue-600/30 transition font-medium" data-filter="all">
+                    <i class="fas fa-th-large mr-2"></i>Todos
+                </button>
+                <button onclick="filterWeeks('modulo1')" class="filter-btn px-6 py-3 rounded-full glass-card hover:bg-blue-600/30 transition font-medium" data-filter="modulo1">
+                    <i class="fas fa-foundation mr-2"></i>Fundamentos
+                </button>
+                <button onclick="filterWeeks('modulo2')" class="filter-btn px-6 py-3 rounded-full glass-card hover:bg-blue-600/30 transition font-medium" data-filter="modulo2">
+                    <i class="fas fa-object-group mr-2"></i>POO
+                </button>
+                <button onclick="filterWeeks('modulo3')" class="filter-btn px-6 py-3 rounded-full glass-card hover:bg-blue-600/30 transition font-medium" data-filter="modulo3">
+                    <i class="fas fa-network-wired mr-2"></i>Comunicación
+                </button>
+                <button onclick="filterWeeks('modulo4')" class="filter-btn px-6 py-3 rounded-full glass-card hover:bg-blue-600/30 transition font-medium" data-filter="modulo4">
+                    <i class="fas fa-layer-group mr-2"></i>Frameworks
+                </button>
+            </div>
+            
+            <!-- Topics Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6" id="weeksGrid">
+                <!-- Topic cards will be generated by JavaScript -->
+            </div>
+        </div>
+    </section>
+    
+    <!-- Resources Section -->
+    <section id="recursos" class="py-20 relative z-10">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                    <span class="gradient-text">Recursos Adicionales</span>
+                </h2>
+                <p class="text-xl text-blue-200">Herramientas y referencias para profundizar tu aprendizaje</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="glass-card rounded-2xl p-8 hover:bg-white/10 transition group">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition">
+                        <i class="fas fa-book-open text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Libros Recomendados</h3>
+                    <ul class="space-y-3 text-blue-200">
+                        <li><a href="https://www.amazon.com/Clean-Architecture-Craftsmans-Software-Structure/dp/0134494164" target="_blank" class="hover:text-blue-400 transition flex items-center"><i class="fas fa-external-link-alt mr-2 text-xs"></i>Clean Architecture - Robert C. Martin</a></li>
+                        <li><a href="https://www.amazon.com/Design-Patterns-Elements-Reusable-Object-Oriented/dp/0201633612" target="_blank" class="hover:text-blue-400 transition flex items-center"><i class="fas fa-external-link-alt mr-2 text-xs"></i>Design Patterns - Gang of Four</a></li>
+                        <li><a href="https://www.amazon.com/Software-Architecture-Practice-3rd-Engineering/dp/0321815734" target="_blank" class="hover:text-blue-400 transition flex items-center"><i class="fas fa-external-link-alt mr-2 text-xs"></i>Software Architecture in Practice</a></li>
+                        <li><a href="https://www.amazon.com/Patterns-Enterprise-Application-Architecture-Martin/dp/0321127420" target="_blank" class="hover:text-blue-400 transition flex items-center"><i class="fas fa-external-link-alt mr-2 text-xs"></i>Patterns of Enterprise Application</a></li>
+                    </ul>
+                </div>
+                
+                <div class="glass-card rounded-2xl p-8 hover:bg-white/10 transition group">
+                    <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition">
+                        <i class="fas fa-tools text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Herramientas</h3>
+                    <ul class="space-y-3 text-blue-200">
+                        <li><a href="https://www.draw.io" target="_blank" class="hover:text-purple-400 transition flex items-center"><i class="fas fa-external-link-alt mr-2 text-xs"></i>Draw.io - Diagramas UML</a></li>
+                        <li><a href="https://www.lucidchart.com" target="_blank" class="hover:text-purple-400 transition flex items-center"><i class="fas fa-external-link-alt mr-2 text-xs"></i>Lucidchart - Arquitectura</a></li>
+                        <li><a href="https://www.plantuml.com" target="_blank" class="hover:text-purple-400 transition flex items-center"><i class="fas fa-external-link-alt mr-2 text-xs"></i>PlantUML - Diagramas como código</a></li>
+                        <li><a href="https://structurizr.com" target="_blank" class="hover:text-purple-400 transition flex items-center"><i class="fas fa-external-link-alt mr-2 text-xs"></i>Structurizr - C4 Model</a></li>
+                    </ul>
+                </div>
+                
+                <div class="glass-card rounded-2xl p-8 hover:bg-white/10 transition group">
+                    <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-teal-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition">
+                        <i class="fas fa-globe text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Estándares</h3>
+                    <ul class="space-y-3 text-blue-200">
+                        <li><a href="https://www.iso.org/standard/74636.html" target="_blank" class="hover:text-green-400 transition flex items-center"><i class="fas fa-external-link-alt mr-2 text-xs"></i>ISO/IEC 25010 - Calidad</a></li>
+                        <li><a href="https://www.iso.org/standard/43447.html" target="_blank" class="hover:text-green-400 transition flex items-center"><i class="fas fa-external-link-alt mr-2 text-xs"></i>ISO/IEC 42010 - Arquitectura</a></li>
+                        <li><a href="https://www.togaf.org" target="_blank" class="hover:text-green-400 transition flex items-center"><i class="fas fa-external-link-alt mr-2 text-xs"></i>TOGAF - Framework Empresarial</a></li>
+                        <li><a href="https://www.opengroup.org/archimate" target="_blank" class="hover:text-green-400 transition flex items-center"><i class="fas fa-external-link-alt mr-2 text-xs"></i>ArchiMate - Modelado</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Contact Section -->
+    <section id="contacto" class="py-20 relative z-10">
+        <div class="container mx-auto px-6">
+            <div class="glass-card rounded-3xl p-12 max-w-4xl mx-auto text-center">
+                <h2 class="text-4xl font-bold mb-4 gradient-text">¿Quieres Saber Más?</h2>
+                <p class="text-xl text-blue-200 mb-8">Contáctanos para más información sobre arquitectura de software</p>
+                <div class="flex flex-wrap justify-center gap-6">
+                    <a href="mailto:info@arquitecturasoftware.com" class="flex items-center gap-3 px-6 py-4 bg-blue-600/30 rounded-xl hover:bg-blue-600/50 transition">
+                        <i class="fas fa-envelope text-2xl text-blue-400"></i>
+                        <span>info@arquitecturasoftware.com</span>
+                    </a>
+                    <a href="https://github.com" target="_blank" class="flex items-center gap-3 px-6 py-4 bg-purple-600/30 rounded-xl hover:bg-purple-600/50 transition">
+                        <i class="fab fa-github text-2xl text-purple-400"></i>
+                        <span>Repositorio GitHub</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="py-8 border-t border-white/10 relative z-10">
+        <div class="container mx-auto px-6 text-center text-blue-300">
+            <p>&copy; 2024 Arquitectura de Software. Todos los derechos reservados.</p>
+            <p class="mt-2 text-sm">Diseñado con <i class="fas fa-heart text-red-400"></i> para arquitectos de software</p>
+        </div>
     </footer>
+    
+    <!-- Week Modal -->
+    <div id="weekModal" class="modal items-center justify-center p-4">
+        <div class="modal-content glass-card rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto m-auto">
+            <div id="modalContent">
+                <!-- Content will be injected here -->
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Weeks Data - Contenido informativo expandido
+        const weeksData = [
+            {
+                week: 1,
+                module: 'modulo1',
+                title: 'Fundamentos de Arquitectura',
+                icon: 'fa-building',
+                color: 'from-blue-500 to-cyan-500',
+                description: 'Esta semana se centra en comprender qué es la arquitectura de software y por qué es crucial para el éxito de cualquier proyecto tecnológico. Se exploran los elementos fundamentales que componen una arquitectura: componentes, conectores y configuraciones. Se estudia cómo las decisiones arquitectónicas impactan directamente en la calidad, rendimiento y mantenibilidad del sistema. Además, se analizan los diferentes roles involucrados en el proceso de diseño arquitectónico y cómo colaboran para crear sistemas robustos y escalables.',
+                concepts: [
+                    { name: 'Arquitectura de Software', desc: 'Estructura fundamental de un sistema que define componentes, sus relaciones, propiedades externas visibles y principios de diseño que guían su evolución. Es el plano maestro que determina cómo se organiza y comunica el software.' },
+                    { name: 'Componentes Arquitectónicos', desc: 'Unidades modulares y reemplazables que encapsulan funcionalidad específica. Pueden ser servicios, módulos, librerías o subsistemas completos que trabajan juntos para cumplir los objetivos del sistema.' },
+                    { name: 'Conectores y Comunicación', desc: 'Mecanismos que permiten la interacción entre componentes: llamadas a procedimientos, eventos, mensajes, pipes, protocolos HTTP/TCP, etc. Definen cómo fluye la información en el sistema.' },
+                    { name: 'Estilos Arquitectónicos', desc: 'Patrones generales de organización como arquitectura en capas, cliente-servidor, microservicios, event-driven, pipe-and-filter. Cada estilo tiene ventajas específicas para diferentes contextos.' },
+                    { name: 'Atributos de Calidad', desc: 'Características no funcionales críticas: rendimiento, seguridad, disponibilidad, escalabilidad, mantenibilidad, portabilidad. Son los criterios para evaluar si una arquitectura cumple sus objetivos.' }
+                ],
+                examples: [
+                    { title: 'Arquitectura en Capas', desc: 'Implementación práctica de separación en capas de presentación (UI), lógica de negocio (servicios) y acceso a datos (repositorios) en una aplicación empresarial.' },
+                    { title: 'Sistema de E-commerce Completo', desc: 'Análisis de arquitectura real con frontend SPA, API REST Gateway, microservicios de catálogo/carrito/pagos, bases de datos especializadas y servicios externos.' }
+                ],
+                resources: [
+                    { name: 'IEEE 1471 - Descripción Arquitectónica', url: 'https://www.iso.org/standard/50508.html' },
+                    { name: 'SEI - Software Engineering Institute', url: 'https://www.sei.cmu.edu/our-work/software-architecture/' },
+                    { name: 'Martin Fowler - Software Architecture Guide', url: 'https://martinfowler.com/architecture/' }
+                ]
+            },
+            {
+                week: 2,
+                module: 'modulo1',
+                title: 'Estándares Internacionales',
+                icon: 'fa-certificate',
+                color: 'from-indigo-500 to-blue-500',
+                description: 'Durante esta semana se profundiza en los estándares internacionales que rigen el diseño y documentación de arquitecturas de software. Se estudian normas ISO/IEC que proporcionan vocabulario común, modelos de calidad y mejores prácticas reconocidas globalmente. Se analiza cómo aplicar estos estándares en proyectos reales, entendiendo su valor para la comunicación entre equipos, la evaluación de sistemas y la toma de decisiones informadas. También se exploran frameworks empresariales como TOGAF y Zachman.',
+                concepts: [
+                    { name: 'ISO/IEC 42010:2011', desc: 'Estándar internacional para la descripción de arquitecturas de sistemas y software. Define conceptos clave como stakeholders, concerns, viewpoints y views para documentar arquitecturas de forma consistente.' },
+                    { name: 'ISO/IEC 25010 (SQuaRE)', desc: 'Modelo de calidad del producto software que define 8 características principales: funcionalidad, rendimiento, compatibilidad, usabilidad, fiabilidad, seguridad, mantenibilidad y portabilidad.' },
+                    { name: 'TOGAF (The Open Group)', desc: 'Framework de arquitectura empresarial que proporciona métodos y herramientas para diseñar, planificar, implementar y gobernar arquitecturas de información empresarial.' },
+                    { name: 'IEEE 1471/ISO 42010', desc: 'Práctica recomendada para descripción arquitectónica que establece un marco conceptual para documentar arquitecturas usando múltiples vistas y puntos de vista.' },
+                    { name: 'Zachman Framework', desc: 'Framework de arquitectura empresarial basado en preguntas fundamentales (Qué, Cómo, Dónde, Quién, Cuándo, Por qué) aplicadas a diferentes perspectivas del sistema.' }
+                ],
+                examples: [
+                    { title: 'Evaluación Bancaria con ISO 25010', desc: 'Caso práctico de aplicación del modelo de calidad para evaluar seguridad, confiabilidad y rendimiento de un sistema bancario crítico.' },
+                    { title: 'Migración Cloud con TOGAF ADM', desc: 'Uso del Architecture Development Method de TOGAF para planificar y ejecutar la migración de sistemas legacy a infraestructura cloud.' }
+                ],
+                resources: [
+                    { name: 'ISO/IEC 42010:2011 Official', url: 'https://www.iso.org/standard/50508.html' },
+                    { name: 'TOGAF Official Documentation', url: 'https://www.opengroup.org/togaf' },
+                    { name: 'ISO 25010 Quality Model', url: 'https://iso25000.com/index.php/en/iso-25000-standards/iso-25010' }
+                ]
+            },
+            {
+                week: 3,
+                module: 'modulo1',
+                title: 'Diseño de Propuesta Arquitectónica',
+                icon: 'fa-drafting-compass',
+                color: 'from-cyan-500 to-teal-500',
+                description: 'Esta semana se enfoca en el proceso completo de crear una propuesta arquitectónica profesional. Se aprende a identificar y documentar requisitos arquitectónicos, definir vistas que comuniquen efectivamente el diseño a diferentes stakeholders, y justificar decisiones técnicas mediante ADRs (Architecture Decision Records). Se practican técnicas para balancear trade-offs entre atributos de calidad conflictivos y crear documentación que sirva como guía durante todo el ciclo de vida del proyecto.',
+                concepts: [
+                    { name: 'Modelo 4+1 Vistas de Kruchten', desc: 'Framework para documentar arquitectura usando 5 vistas: Lógica (funcionalidad), Desarrollo (organización del código), Proceso (concurrencia), Física (despliegue) y Escenarios (casos de uso).' },
+                    { name: 'Architecture Decision Records (ADR)', desc: 'Documentos cortos que registran decisiones arquitectónicas importantes: contexto, decisión tomada, consecuencias y alternativas consideradas. Crean un historial de razonamiento.' },
+                    { name: 'Análisis de Trade-offs', desc: 'Proceso sistemático para evaluar y balancear atributos de calidad que pueden entrar en conflicto, como rendimiento vs seguridad, o flexibilidad vs simplicidad.' },
+                    { name: 'Identificación de Stakeholders', desc: 'Proceso de identificar todas las partes interesadas (desarrolladores, usuarios, operaciones, negocio) y sus concerns específicos que la arquitectura debe abordar.' },
+                    { name: 'Software Architecture Document (SAD)', desc: 'Documento formal que describe la arquitectura completa: visión general, vistas arquitectónicas, decisiones clave, restricciones y roadmap de evolución.' }
+                ],
+                examples: [
+                    { title: 'Sistema de Reservas Aéreas', desc: 'Diseño arquitectónico completo para un sistema de reservas incluyendo diagramas C4, ADRs para elección de tecnologías, y análisis de escalabilidad.' },
+                    { title: 'Plataforma IoT Industrial', desc: 'Propuesta arquitectónica para sistema de monitoreo de sensores con procesamiento edge, ingesta de datos masiva y visualización en tiempo real.' }
+                ],
+                resources: [
+                    { name: 'Modelo 4+1 Vistas - Wikipedia', url: 'https://en.wikipedia.org/wiki/4%2B1_architectural_view_model' },
+                    { name: 'ADR Templates - GitHub', url: 'https://github.com/joelparkerhenderson/architecture-decision-record' },
+                    { name: 'C4 Model for Architecture', url: 'https://c4model.com/' }
+                ]
+            },
+            {
+                week: 4,
+                module: 'modulo1',
+                title: 'Evaluación de Arquitectura',
+                icon: 'fa-clipboard-check',
+                color: 'from-teal-500 to-green-500',
+                description: 'En esta semana se estudian metodologías formales para evaluar arquitecturas de software antes y después de su implementación. Se profundiza en el método ATAM del SEI para análisis de trade-offs, técnicas de evaluación de escalabilidad mediante pruebas de carga, auditorías de seguridad y métricas de mantenibilidad. Se aprende a identificar riesgos arquitectónicos tempranamente y a proponer mitigaciones efectivas basadas en evidencia.',
+                concepts: [
+                    { name: 'ATAM (Architecture Tradeoff Analysis Method)', desc: 'Método estructurado del SEI para evaluar arquitecturas identificando puntos de sensibilidad, trade-offs y riesgos mediante el análisis de escenarios de atributos de calidad.' },
+                    { name: 'Evaluación de Escalabilidad', desc: 'Análisis de la capacidad del sistema para crecer horizontal (más instancias) o verticalmente (más recursos) según demanda, incluyendo pruebas de carga y modelado de capacidad.' },
+                    { name: 'Análisis de Mantenibilidad', desc: 'Evaluación de facilidad para modificar, corregir y evolucionar el sistema. Incluye métricas como complejidad ciclomática, acoplamiento y cohesión de módulos.' },
+                    { name: 'Auditoría de Seguridad', desc: 'Revisión sistemática de la arquitectura para identificar vulnerabilidades, superficies de ataque y cumplimiento con estándares de seguridad como OWASP.' },
+                    { name: 'Métricas y KPIs Arquitectónicos', desc: 'Indicadores cuantitativos para medir atributos de calidad: tiempo de respuesta, throughput, disponibilidad (uptime), MTTR, cobertura de pruebas, deuda técnica.' }
+                ],
+                examples: [
+                    { title: 'Workshop ATAM para Streaming', desc: 'Ejecución completa de evaluación ATAM para un sistema de streaming de video, identificando escenarios críticos de rendimiento y disponibilidad.' },
+                    { title: 'Pruebas de Carga con JMeter', desc: 'Diseño y ejecución de pruebas de escalabilidad para identificar cuellos de botella y límites de capacidad del sistema.' }
+                ],
+                resources: [
+                    { name: 'ATAM Method - SEI CMU', url: 'https://www.sei.cmu.edu/our-work/architecture/' },
+                    { name: 'OWASP Web Security Testing Guide', url: 'https://owasp.org/www-project-web-security-testing-guide/' },
+                    { name: 'Apache JMeter', url: 'https://jmeter.apache.org/' }
+                ]
+            },
+            {
+                week: 5,
+                module: 'modulo2',
+                title: 'Principios de POO',
+                icon: 'fa-cube',
+                color: 'from-purple-500 to-indigo-500',
+                description: 'Esta semana profundiza en los principios fundamentales de la Programación Orientada a Objetos y su aplicación directa en el diseño arquitectónico. Se estudian los cuatro pilares de POO y cómo impactan en la modularidad y extensibilidad del software. Se analizan los principios SOLID en detalle, entendiendo cómo cada uno contribuye a crear arquitecturas más flexibles, testables y mantenibles. Se exploran antipatrones comunes y cómo evitarlos.',
+                concepts: [
+                    { name: 'Encapsulamiento', desc: 'Principio de ocultar la implementación interna de un objeto, exponiendo solo una interfaz pública. Protege el estado interno y permite cambiar implementaciones sin afectar clientes.' },
+                    { name: 'Herencia y Composición', desc: 'Mecanismos para reutilizar código. La herencia crea relaciones "es-un" mientras la composición crea "tiene-un". Se prefiere composición sobre herencia para mayor flexibilidad.' },
+                    { name: 'Polimorfismo', desc: 'Capacidad de objetos de diferentes clases de responder al mismo mensaje de formas distintas. Permite escribir código genérico que trabaja con abstracciones.' },
+                    { name: 'Abstracción', desc: 'Proceso de identificar características esenciales ignorando detalles irrelevantes. Permite modelar conceptos del dominio de forma clara y manejable.' },
+                    { name: 'Principios SOLID', desc: 'Cinco principios de diseño: Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion. Guían hacia código limpio y arquitecturas robustas.' }
+                ],
+                examples: [
+                    { title: 'Patrón Strategy con Polimorfismo', desc: 'Implementación de algoritmos de cálculo de precios intercambiables usando interfaces y polimorfismo para un sistema de e-commerce.' },
+                    { title: 'Aplicación de SOLID en Pagos', desc: 'Refactorización de un módulo de procesamiento de pagos aplicando cada principio SOLID para mejorar extensibilidad y testabilidad.' }
+                ],
+                resources: [
+                    { name: 'SOLID Principles Explained', url: 'https://www.digitalocean.com/community/conceptual-articles/s-o-l-i-d-the-first-five-principles-of-object-oriented-design' },
+                    { name: 'Refactoring Guru - OOP Basics', url: 'https://refactoring.guru/es/design-patterns/what-is-pattern' },
+                    { name: 'Clean Code - Robert C. Martin', url: 'https://www.oreilly.com/library/view/clean-code-a/9780136083238/' }
+                ]
+            },
+            {
+                week: 6,
+                module: 'modulo2',
+                title: 'Modelado con Diagramas OO',
+                icon: 'fa-sitemap',
+                color: 'from-violet-500 to-purple-500',
+                description: 'Durante esta semana se domina el arte de modelar arquitecturas usando UML y otras notaciones. Se aprende a crear diagramas de clases que muestren la estructura estática, diagramas de secuencia para interacciones dinámicas, diagramas de estados para ciclos de vida, y diagramas de componentes para la organización física. Se practica la selección del diagrama apropiado según la audiencia y el aspecto del sistema a comunicar.',
+                concepts: [
+                    { name: 'UML (Unified Modeling Language)', desc: 'Lenguaje visual estandarizado para especificar, visualizar, construir y documentar sistemas de software. Incluye 14 tipos de diagramas para diferentes aspectos del sistema.' },
+                    { name: 'Diagrama de Clases', desc: 'Representa la estructura estática mostrando clases, atributos, métodos y relaciones (asociación, agregación, composición, herencia, dependencia).' },
+                    { name: 'Diagrama de Secuencia', desc: 'Muestra cómo los objetos interactúan en el tiempo, con mensajes, activaciones, loops, condicionales y fragmentos combinados.' },
+                    { name: 'Diagrama de Estados', desc: 'Modela el ciclo de vida de un objeto o sistema, mostrando estados, transiciones, eventos disparadores y acciones.' },
+                    { name: 'Diagrama de Componentes', desc: 'Visualiza la organización física del sistema: componentes, interfaces proporcionadas/requeridas, y dependencias entre módulos.' }
+                ],
+                examples: [
+                    { title: 'Modelado E-commerce Completo', desc: 'Creación de suite completa de diagramas UML para sistema de comercio electrónico: clases del dominio, secuencias de compra, estados de pedido.' },
+                    { title: 'Flujo de Checkout', desc: 'Diagrama de secuencia detallado para el proceso de checkout mostrando interacción entre carrito, inventario, pagos y notificaciones.' }
+                ],
+                resources: [
+                    { name: 'UML Diagrams Reference', url: 'https://www.uml-diagrams.org/' },
+                    { name: 'Visual Paradigm UML Guide', url: 'https://www.visual-paradigm.com/guide/uml-unified-modeling-language/' },
+                    { name: 'PlantUML - Diagrams as Code', url: 'https://plantuml.com/' }
+                ]
+            },
+            {
+                week: 7,
+                module: 'modulo2',
+                title: 'Implementación con POO',
+                icon: 'fa-code',
+                color: 'from-fuchsia-500 to-violet-500',
+                description: 'Esta semana se traduce el diseño arquitectónico a código real usando patrones de diseño orientados a objetos. Se implementan los patrones GoF (Gang of Four) más importantes: creacionales como Factory y Singleton, estructurales como Adapter y Decorator, y comportamentales como Observer y Strategy. Se practica la inyección de dependencias para lograr bajo acoplamiento y alta cohesión en los componentes.',
+                concepts: [
+                    { name: 'Patrones de Diseño GoF', desc: 'Catálogo de 23 soluciones probadas a problemas recurrentes de diseño OO, organizados en creacionales, estructurales y comportamentales.' },
+                    { name: 'Factory Pattern', desc: 'Patrón creacional que encapsula la lógica de creación de objetos, permitiendo crear instancias sin especificar la clase exacta. Variantes: Simple Factory, Factory Method, Abstract Factory.' },
+                    { name: 'Singleton Pattern', desc: 'Garantiza una única instancia de una clase con acceso global. Útil para recursos compartidos pero puede dificultar testing. Considerar alternativas como Dependency Injection.' },
+                    { name: 'Observer Pattern', desc: 'Define dependencia uno-a-muchos donde cuando un objeto cambia de estado, todos sus dependientes son notificados automáticamente. Base para arquitecturas event-driven.' },
+                    { name: 'Dependency Injection', desc: 'Técnica donde las dependencias de un objeto son proporcionadas externamente en lugar de creadas internamente. Facilita testing, reduce acoplamiento y mejora modularidad.' }
+                ],
+                examples: [
+                    { title: 'Sistema de Plugins Extensible', desc: 'Implementación de arquitectura de plugins usando Factory para crear plugins dinámicamente y Strategy para comportamientos intercambiables.' },
+                    { title: 'Event Bus con Observer', desc: 'Construcción de un sistema de eventos desacoplado usando Observer pattern para comunicación entre módulos sin dependencias directas.' }
+                ],
+                resources: [
+                    { name: 'Design Patterns - Refactoring Guru', url: 'https://refactoring.guru/design-patterns' },
+                    { name: 'Gang of Four Patterns', url: 'https://springframework.guru/gang-of-four-design-patterns/' },
+                    { name: 'Dependency Injection Principles', url: 'https://martinfowler.com/articles/injection.html' }
+                ]
+            },
+            {
+                week: 8,
+                module: 'modulo2',
+                title: 'Evaluación de Implementación POO',
+                icon: 'fa-search-plus',
+                color: 'from-pink-500 to-fuchsia-500',
+                description: 'En esta semana se aprende a evaluar la calidad del código orientado a objetos mediante análisis estático, métricas de diseño y técnicas de refactorización. Se estudian los "code smells" que indican problemas de diseño, métricas OO como acoplamiento y cohesión, y herramientas como SonarQube para automatizar el análisis. Se practica el refactoring sistemático para mejorar código existente sin cambiar su comportamiento.',
+                concepts: [
+                    { name: 'Code Smells', desc: 'Indicadores de posibles problemas en el código: God Class, Feature Envy, Long Method, Duplicate Code, Shotgun Surgery. Son síntomas que sugieren necesidad de refactorización.' },
+                    { name: 'Métricas OO', desc: 'Indicadores cuantitativos de calidad: CBO (Coupling Between Objects), WMC (Weighted Methods per Class), DIT (Depth of Inheritance), LCOM (Lack of Cohesion).' },
+                    { name: 'Refactoring Sistemático', desc: 'Técnicas para mejorar el diseño del código sin cambiar comportamiento: Extract Method, Move Method, Replace Conditional with Polymorphism, Introduce Parameter Object.' },
+                    { name: 'Testing como Red de Seguridad', desc: 'Pruebas unitarias, de integración y E2E que permiten refactorizar con confianza, detectando regresiones inmediatamente.' },
+                    { name: 'Code Review Efectivo', desc: 'Proceso de revisión sistemática del código por pares, enfocado en diseño, legibilidad, seguridad y adherencia a estándares del equipo.' }
+                ],
+                examples: [
+                    { title: 'Análisis con SonarQube', desc: 'Configuración y uso de SonarQube para análisis estático continuo, identificando deuda técnica, vulnerabilidades y code smells.' },
+                    { title: 'Refactoring de Sistema Legacy', desc: 'Transformación paso a paso de código legacy aplicando patrones modernos, con cobertura de tests para garantizar comportamiento.' }
+                ],
+                resources: [
+                    { name: 'SonarQube Official', url: 'https://www.sonarqube.org/' },
+                    { name: 'Refactoring Catalog', url: 'https://refactoring.com/catalog/' },
+                    { name: 'Working Effectively with Legacy Code', url: 'https://www.oreilly.com/library/view/working-effectively-with/0131177052/' }
+                ]
+            },
+            {
+                week: 9,
+                module: 'modulo3',
+                title: 'Comunicación entre Arquitecturas',
+                icon: 'fa-exchange-alt',
+                color: 'from-orange-500 to-amber-500',
+                description: 'Esta semana explora los fundamentos de la comunicación entre sistemas y servicios. Se estudian diferentes paradigmas de integración: síncrona (REST, GraphQL, gRPC) y asíncrona (mensajería, eventos). Se analizan protocolos de comunicación, formatos de serialización (JSON, Protocol Buffers, Avro), y patrones de integración empresarial. Se comprende cuándo usar cada enfoque según requisitos de latencia, consistencia y acoplamiento.',
+                concepts: [
+                    { name: 'APIs (Application Programming Interfaces)', desc: 'Contratos que definen cómo los sistemas se comunican. Incluyen endpoints, métodos, formatos de datos, autenticación y manejo de errores.' },
+                    { name: 'REST (Representational State Transfer)', desc: 'Estilo arquitectónico para servicios web basado en recursos, métodos HTTP (GET, POST, PUT, DELETE), y principios como statelessness y cacheability.' },
+                    { name: 'GraphQL', desc: 'Lenguaje de consulta para APIs que permite a los clientes solicitar exactamente los datos que necesitan. Reduce over-fetching y under-fetching típicos de REST.' },
+                    { name: 'gRPC', desc: 'Framework RPC de alto rendimiento de Google basado en HTTP/2 y Protocol Buffers. Ideal para comunicación entre microservicios con baja latencia.' },
+                    { name: 'Mensajería Asíncrona', desc: 'Comunicación desacoplada mediante colas (point-to-point) y topics (pub/sub). Tecnologías como RabbitMQ, Apache Kafka, AWS SQS/SNS.' }
+                ],
+                examples: [
+                    { title: 'API Gateway Pattern', desc: 'Implementación de gateway que unifica múltiples microservicios, manejando autenticación, rate limiting, transformación y routing.' },
+                    { title: 'Event-Driven con Kafka', desc: 'Arquitectura de notificaciones usando Apache Kafka para procesamiento de eventos en tiempo real con alta disponibilidad.' }
+                ],
+                resources: [
+                    { name: 'REST API Tutorial', url: 'https://restfulapi.net/' },
+                    { name: 'GraphQL Official', url: 'https://graphql.org/' },
+                    { name: 'gRPC Documentation', url: 'https://grpc.io/docs/' },
+                    { name: 'Apache Kafka', url: 'https://kafka.apache.org/' }
+                ]
+            },
+            {
+                week: 10,
+                module: 'modulo3',
+                title: 'Diseño de Comunicación',
+                icon: 'fa-project-diagram',
+                color: 'from-amber-500 to-yellow-500',
+                description: 'Durante esta semana se diseñan modelos de comunicación robustos y bien documentados. Se aprende a usar especificaciones estándar como OpenAPI/Swagger para REST y AsyncAPI para sistemas event-driven. Se practica el enfoque contract-first, estrategias de versionado de APIs, y diseño de esquemas de datos. Se estudian patrones de integración empresarial (EIP) para resolver problemas comunes de comunicación entre sistemas.',
+                concepts: [
+                    { name: 'API Design Principles', desc: 'Principios para diseñar APIs consistentes y usables: convenciones de nombrado, paginación, filtrado, manejo de errores, HATEOAS, idempotencia.' },
+                    { name: 'OpenAPI/Swagger', desc: 'Especificación estándar para describir APIs REST. Permite generar documentación interactiva, SDKs cliente, y stubs de servidor automáticamente.' },
+                    { name: 'AsyncAPI', desc: 'Especificación para documentar APIs asíncronas y event-driven, similar a OpenAPI pero para mensajería y streaming.' },
+                    { name: 'Contract-First Design', desc: 'Metodología donde se diseña y acuerda el contrato de la API antes de implementarla. Facilita desarrollo paralelo y reduce malentendidos.' },
+                    { name: 'API Versioning Strategies', desc: 'Estrategias para evolucionar APIs: versionado en URL (/v1/), en headers, o mediante content negotiation. Mantiene compatibilidad hacia atrás.' }
+                ],
+                examples: [
+                    { title: 'Microservicios de Delivery', desc: 'Diseño completo de comunicación entre servicios de pedidos, restaurantes, repartidores y tracking en tiempo real.' },
+                    { title: 'Documentación con Swagger UI', desc: 'Creación de documentación interactiva y auto-generada que permite probar endpoints directamente desde el navegador.' }
+                ],
+                resources: [
+                    { name: 'OpenAPI Specification', url: 'https://swagger.io/specification/' },
+                    { name: 'Google API Design Guide', url: 'https://cloud.google.com/apis/design' },
+                    { name: 'AsyncAPI Initiative', url: 'https://www.asyncapi.com/' },
+                    { name: 'Enterprise Integration Patterns', url: 'https://www.enterpriseintegrationpatterns.com/' }
+                ]
+            },
+            {
+                week: 11,
+                module: 'modulo3',
+                title: 'Implementación de Comunicación',
+                icon: 'fa-plug',
+                color: 'from-yellow-500 to-lime-500',
+                description: 'Esta semana se implementan mecanismos de comunicación reales entre sistemas. Se construyen clientes HTTP robustos con manejo de reintentos y timeouts, se implementa comunicación en tiempo real con WebSockets, y se configuran sistemas de mensajería como RabbitMQ y Kafka. Se estudian patrones de resiliencia como Circuit Breaker, Bulkhead y Retry para manejar fallos de red gracefully.',
+                concepts: [
+                    { name: 'HTTP Clients Robustos', desc: 'Implementación de clientes HTTP con timeouts, reintentos exponenciales, connection pooling y manejo de errores transitorios.' },
+                    { name: 'WebSockets', desc: 'Protocolo para comunicación bidireccional full-duplex sobre TCP. Ideal para aplicaciones en tiempo real: chat, notificaciones, dashboards live.' },
+                    { name: 'Message Queues', desc: 'Implementación práctica con RabbitMQ (AMQP), Apache Kafka (streaming), AWS SQS (cloud-native). Manejo de dead letter queues y reintentos.' },
+                    { name: 'Service Mesh', desc: 'Capa de infraestructura (Istio, Linkerd) que maneja comunicación entre microservicios: mTLS, load balancing, observabilidad, traffic management.' },
+                    { name: 'Circuit Breaker Pattern', desc: 'Patrón de resiliencia que previene cascadas de fallos al "abrir el circuito" cuando un servicio downstream falla repetidamente.' }
+                ],
+                examples: [
+                    { title: 'Chat en Tiempo Real', desc: 'Implementación completa de aplicación de chat usando WebSockets con rooms, presencia de usuarios y persistencia de mensajes.' },
+                    { title: 'Procesamiento de Pedidos con RabbitMQ', desc: 'Sistema de procesamiento asíncrono de pedidos con colas de trabajo, dead letter queues y garantías de entrega.' }
+                ],
+                resources: [
+                    { name: 'Socket.io Documentation', url: 'https://socket.io/' },
+                    { name: 'RabbitMQ Tutorials', url: 'https://www.rabbitmq.com/getstarted.html' },
+                    { name: 'Resilience4j', url: 'https://resilience4j.readme.io/' },
+                    { name: 'Istio Service Mesh', url: 'https://istio.io/' }
+                ]
+            },
+            {
+                week: 12,
+                module: 'modulo3',
+                title: 'Evaluación de Comunicación',
+                icon: 'fa-tachometer-alt',
+                color: 'from-lime-500 to-green-500',
+                description: 'En esta semana se evalúa la eficiencia, seguridad y confiabilidad de los mecanismos de comunicación implementados. Se estudian técnicas de seguridad para APIs (OAuth 2.0, JWT, mTLS), estrategias de rate limiting, y herramientas de performance testing. Se configura observabilidad completa con logging, métricas y distributed tracing para diagnosticar problemas en sistemas distribuidos.',
+                concepts: [
+                    { name: 'API Security', desc: 'Mecanismos de seguridad para APIs: autenticación (OAuth 2.0, JWT, API Keys), autorización (RBAC, ABAC), y protección contra ataques comunes (injection, CSRF).' },
+                    { name: 'Rate Limiting', desc: 'Control de cantidad de solicitudes por cliente para proteger recursos, prevenir abusos y garantizar fair usage. Algoritmos: token bucket, sliding window.' },
+                    { name: 'Performance Testing', desc: 'Pruebas de carga (load testing), estrés (stress testing) y resistencia (endurance testing) para APIs. Herramientas: k6, Gatling, Locust.' },
+                    { name: 'Observabilidad (Three Pillars)', desc: 'Logs estructurados, métricas (Prometheus), y distributed tracing (Jaeger, Zipkin) para visibilidad completa en sistemas distribuidos.' },
+                    { name: 'TLS/mTLS', desc: 'Transport Layer Security para cifrar comunicaciones. mTLS añade autenticación mutua entre cliente y servidor, común en service mesh.' }
+                ],
+                examples: [
+                    { title: 'Seguridad con API Gateway', desc: 'Configuración de Kong o AWS API Gateway con OAuth 2.0, rate limiting, IP whitelisting y WAF rules.' },
+                    { title: 'Observability Stack Completo', desc: 'Implementación de stack ELK/Grafana con Prometheus para métricas, Jaeger para tracing y alertas automatizadas.' }
+                ],
+                resources: [
+                    { name: 'OWASP API Security Top 10', url: 'https://owasp.org/www-project-api-security/' },
+                    { name: 'OAuth 2.0 Specification', url: 'https://oauth.net/2/' },
+                    { name: 'k6 Load Testing', url: 'https://k6.io/' },
+                    { name: 'OpenTelemetry', url: 'https://opentelemetry.io/' }
+                ]
+            },
+            {
+                week: 13,
+                module: 'modulo4',
+                title: 'Frameworks de Arquitectura',
+                icon: 'fa-layer-group',
+                color: 'from-red-500 to-orange-500',
+                description: 'Esta semana investiga los frameworks de arquitectura de software más utilizados en la industria. Se estudia la diferencia fundamental entre frameworks y bibliotecas, y se analizan patrones arquitectónicos como MVC, MVVM, Clean Architecture y Hexagonal. Se evalúa cómo cada framework implementa estos patrones y cuáles son sus fortalezas para diferentes tipos de aplicaciones.',
+                concepts: [
+                    { name: 'Framework vs Library', desc: 'Un framework controla el flujo de la aplicación (Inversion of Control), mientras una biblioteca es llamada por el código del desarrollador. Los frameworks imponen estructura.' },
+                    { name: 'MVC (Model-View-Controller)', desc: 'Patrón que separa datos (Model), presentación (View) y lógica de control (Controller). Base de muchos frameworks web como Rails, Django, Spring MVC.' },
+                    { name: 'MVVM (Model-View-ViewModel)', desc: 'Evolución de MVC para aplicaciones con UI rica. El ViewModel expone datos y comandos que la View consume mediante data binding.' },
+                    { name: 'Clean Architecture', desc: 'Arquitectura en capas concéntricas de Robert C. Martin. Las dependencias apuntan hacia adentro, manteniendo el dominio independiente de frameworks y UI.' },
+                    { name: 'Hexagonal Architecture', desc: 'También llamada Ports & Adapters. El dominio está en el centro, conectado al exterior mediante puertos (interfaces) y adaptadores (implementaciones).' }
+                ],
+                examples: [
+                    { title: 'Comparativa de Frameworks', desc: 'Análisis detallado de Spring Boot (Java), Django (Python), Laravel (PHP), Express/NestJS (Node.js) evaluando productividad, rendimiento y ecosistema.' },
+                    { title: 'Clean Architecture en Práctica', desc: 'Implementación de capas (Entities, Use Cases, Interface Adapters, Frameworks) con independencia de base de datos y framework web.' }
+                ],
+                resources: [
+                    { name: 'Clean Architecture - Uncle Bob', url: 'https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html' },
+                    { name: 'Hexagonal Architecture - Alistair Cockburn', url: 'https://alistair.cockburn.us/hexagonal-architecture/' },
+                    { name: 'Domain-Driven Design', url: 'https://domainlanguage.com/ddd/' }
+                ]
+            },
+            {
+                week: 14,
+                module: 'modulo4',
+                title: 'Selección de Framework',
+                icon: 'fa-balance-scale',
+                color: 'from-rose-500 to-red-500',
+                description: 'Durante esta semana se desarrolla un proceso sistemático para seleccionar el framework adecuado para cada proyecto. Se analizan criterios técnicos (rendimiento, escalabilidad, seguridad), organizacionales (curva de aprendizaje, talento disponible) y de negocio (licenciamiento, soporte). Se crean matrices de decisión ponderadas y se ejecutan pruebas de concepto para validar la elección.',
+                concepts: [
+                    { name: 'Criterios de Selección Técnicos', desc: 'Rendimiento, escalabilidad, seguridad built-in, soporte para testing, calidad de documentación, integración con herramientas existentes.' },
+                    { name: 'Total Cost of Ownership (TCO)', desc: 'Costo total incluyendo licencias, infraestructura, desarrollo, mantenimiento, capacitación y eventual migración.' },
+                    { name: 'Vendor Lock-in', desc: 'Riesgo de dependencia excesiva de un proveedor. Evaluar facilidad de migración, uso de estándares abiertos y portabilidad del código.' },
+                    { name: 'Madurez y Comunidad', desc: 'Estabilidad del framework, frecuencia de releases, tamaño y actividad de la comunidad, disponibilidad de recursos de aprendizaje.' },
+                    { name: 'Ecosistema', desc: 'Herramientas complementarias, plugins, extensiones, integraciones con servicios cloud y bases de datos.' }
+                ],
+                examples: [
+                    { title: 'Matriz de Decisión Ponderada', desc: 'Creación de matriz con criterios ponderados según importancia del proyecto, evaluando 3-4 frameworks candidatos objetivamente.' },
+                    { title: 'Proof of Concept (PoC)', desc: 'Implementación de la misma funcionalidad core en diferentes frameworks para evaluar productividad real y fit técnico.' }
+                ],
+                resources: [
+                    { name: 'ThoughtWorks Technology Radar', url: 'https://www.thoughtworks.com/radar' },
+                    { name: 'Stack Overflow Developer Survey', url: 'https://survey.stackoverflow.co/2023/' },
+                    { name: 'GitHub Octoverse', url: 'https://octoverse.github.com/' }
+                ]
+            },
+            {
+                week: 15,
+                module: 'modulo4',
+                title: 'Diseño con Framework',
+                icon: 'fa-pencil-ruler',
+                color: 'from-blue-600 to-indigo-600',
+                description: 'Esta semana se diseña la arquitectura completa del software utilizando el framework seleccionado. Se define la estructura de carpetas y módulos, se configura la gestión de dependencias y entornos, y se establecen convenciones del equipo. Se utilizan herramientas de scaffolding para generar código base y se documentan las decisiones de diseño específicas del framework.',
+                concepts: [
+                    { name: 'Project Structure', desc: 'Organización de carpetas, módulos y paquetes siguiendo convenciones del framework y principios como separation of concerns. Monolito modular vs microservicios.' },
+                    { name: 'Configuration Management', desc: 'Gestión de configuración por entorno (dev, staging, prod) usando variables de entorno, archivos de configuración, y servicios como Vault o AWS Parameter Store.' },
+                    { name: 'Dependency Management', desc: 'Gestión de dependencias con herramientas como Maven, Gradle, npm, pip. Versionado semántico, lock files, y estrategias de actualización.' },
+                    { name: 'Scaffolding', desc: 'Generación automática de código base usando CLI del framework (rails generate, ng generate, artisan make). Acelera desarrollo y asegura consistencia.' },
+                    { name: 'Framework Best Practices', desc: 'Convenciones y patrones recomendados específicos del framework: naming, estructura, manejo de errores, logging, testing.' }
+                ],
+                examples: [
+                    { title: 'Monorepo con Múltiples Servicios', desc: 'Configuración de proyecto monorepo usando Nx o Turborepo para gestionar múltiples aplicaciones y bibliotecas compartidas.' },
+                    { title: 'Feature Modules', desc: 'Diseño modular donde cada feature del negocio es un módulo independiente con su propio dominio, servicios y UI.' }
+                ],
+                resources: [
+                    { name: 'Spring Boot Reference', url: 'https://docs.spring.io/spring-boot/docs/current/reference/html/' },
+                    { name: 'Django Documentation', url: 'https://docs.djangoproject.com/en/stable/' },
+                    { name: 'NestJS Documentation', url: 'https://docs.nestjs.com/' },
+                    { name: 'Nx Monorepo Tools', url: 'https://nx.dev/' }
+                ]
+            },
+            {
+                week: 16,
+                module: 'modulo4',
+                title: 'Implementación y Evaluación Final',
+                icon: 'fa-flag-checkered',
+                color: 'from-emerald-500 to-teal-500',
+                description: 'La semana final integra todo lo aprendido implementando y evaluando la arquitectura completa. Se configura CI/CD para automatizar builds, tests y deployments. Se implementan quality gates que aseguran estándares de código. Se crea documentación técnica y de usuario. Se establece un proceso de mejora continua con retrospectivas y métricas de seguimiento.',
+                concepts: [
+                    { name: 'CI/CD Pipeline', desc: 'Automatización completa del ciclo de vida: build, test, análisis estático, empaquetado, deploy a múltiples entornos. Tools: GitHub Actions, GitLab CI, Jenkins.' },
+                    { name: 'Quality Gates', desc: 'Puntos de control automáticos que bloquean deployment si no se cumplen criterios: cobertura mínima, sin vulnerabilidades críticas, sin code smells bloqueantes.' },
+                    { name: 'Testing Pyramid', desc: 'Estrategia de testing con muchos tests unitarios (base), menos tests de integración (medio), y pocos tests E2E (cima). Optimiza velocidad y cobertura.' },
+                    { name: 'Technical Documentation', desc: 'Documentación técnica: README, arquitectura (C4, ADRs), APIs (OpenAPI), guías de desarrollo, runbooks de operación.' },
+                    { name: 'Continuous Improvement', desc: 'Prácticas para evolución continua: retrospectivas, tech debt tracking, métricas de productividad (DORA), experimentos y spikes técnicos.' }
+                ],
+                examples: [
+                    { title: 'Pipeline CI/CD Completo', desc: 'Configuración de GitHub Actions con stages de lint, test, build, security scan, deploy a staging y producción con approval gates.' },
+                    { title: 'Quality Gates con SonarQube', desc: 'Integración de SonarQube en pipeline con gates que bloquean merge si hay issues críticos o cobertura insuficiente.' }
+                ],
+                resources: [
+                    { name: 'GitHub Actions Documentation', url: 'https://docs.github.com/en/actions' },
+                    { name: 'Practical Test Pyramid', url: 'https://martinfowler.com/articles/practical-test-pyramid.html' },
+                    { name: 'DORA Metrics', url: 'https://cloud.google.com/blog/products/devops-sre/using-the-four-keys-to-measure-your-devops-performance' },
+                    { name: 'Arc42 Documentation Template', url: 'https://arc42.org/' }
+                ]
+            }
+        ];
+        
+        // Generate particles
+        function generateParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+        
+        // Render week cards
+        function renderWeeks(filter = 'all') {
+            const grid = document.getElementById('weeksGrid');
+            grid.innerHTML = '';
+            
+            const filtered = filter === 'all' ? weeksData : weeksData.filter(w => w.module === filter);
+            
+            filtered.forEach((week, index) => {
+                const card = document.createElement('div');
+                card.className = `week-card glass-card rounded-2xl p-6 cursor-pointer`;
+                card.style.animationDelay = `${index * 0.1}s`;
+                card.setAttribute('data-week', week.week);
+                card.onclick = () => openModal(week);
+                
+                card.innerHTML = `
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-sm font-medium text-blue-400">Semana ${week.week}</span>
+                        <div class="icon-box w-12 h-12 bg-gradient-to-br ${week.color} rounded-xl flex items-center justify-center">
+                            <i class="fas ${week.icon} text-lg"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">${week.title}</h3>
+                    <p class="text-sm text-blue-200 line-clamp-3">${week.description}</p>
+                    <div class="mt-4 flex items-center text-blue-400 text-sm">
+                        <span>Ver detalles</span>
+                        <i class="fas fa-arrow-right ml-2"></i>
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+        
+        // Filter weeks
+        function filterWeeks(filter) {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-blue-600');
+                if (btn.dataset.filter === filter) {
+                    btn.classList.add('active', 'bg-blue-600');
+                }
+            });
+            renderWeeks(filter);
+        }
+        
+        // Open modal
+        function openModal(week) {
+            const modal = document.getElementById('weekModal');
+            const content = document.getElementById('modalContent');
+            
+            content.innerHTML = `
+                <div class="relative">
+                    <div class="bg-gradient-to-r ${week.color} p-8 rounded-t-3xl">
+                        <button onclick="closeModal()" class="absolute top-4 right-4 w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                        <div class="flex items-center gap-4">
+                            <div class="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center">
+                                <i class="fas ${week.icon} text-4xl"></i>
+                            </div>
+                            <div>
+                                <span class="text-sm font-medium opacity-80">Semana ${week.week}</span>
+                                <h2 class="text-3xl font-bold">${week.title}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-8 space-y-8">
+                        <div>
+                            <h3 class="text-xl font-bold mb-3 flex items-center">
+                                <i class="fas fa-bullseye text-blue-400 mr-3"></i>Descripción
+                            </h3>
+                            <p class="text-blue-200 leading-relaxed">${week.description}</p>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-xl font-bold mb-4 flex items-center">
+                                <i class="fas fa-lightbulb text-yellow-400 mr-3"></i>Conceptos Clave
+                            </h3>
+                            <div class="grid gap-3">
+                                ${week.concepts.map(c => `
+                                    <div class="bg-slate-800/50 rounded-xl p-4 border-l-4 border-blue-500">
+                                        <h4 class="font-semibold text-blue-300">${c.name}</h4>
+                                        <p class="text-sm text-blue-200 mt-1">${c.desc}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-xl font-bold mb-4 flex items-center">
+                                <i class="fas fa-flask text-green-400 mr-3"></i>Ejemplos Prácticos
+                            </h3>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                ${week.examples.map(e => `
+                                    <div class="bg-gradient-to-br from-green-900/30 to-teal-900/30 rounded-xl p-4 border border-green-500/30">
+                                        <h4 class="font-semibold text-green-300 flex items-center">
+                                            <i class="fas fa-code mr-2"></i>${e.title}
+                                        </h4>
+                                        <p class="text-sm text-blue-200 mt-2">${e.desc}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-xl font-bold mb-4 flex items-center">
+                                <i class="fas fa-link text-purple-400 mr-3"></i>Recursos y Referencias
+                            </h3>
+                            <div class="space-y-2">
+                                ${week.resources.map(r => `
+                                    <a href="${r.url}" target="_blank" class="flex items-center gap-3 p-3 bg-purple-900/30 rounded-lg hover:bg-purple-900/50 transition group">
+                                        <i class="fas fa-external-link-alt text-purple-400 group-hover:translate-x-1 transition-transform"></i>
+                                        <span>${r.name}</span>
+                                    </a>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // Close modal
+        function closeModal() {
+            const modal = document.getElementById('weekModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Mobile menu
+        const menuBtn = document.getElementById('menuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        function closeMobileMenu() {
+            mobileMenu.classList.add('hidden');
+        }
+        
+        // Close modal on escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+        
+        // Close modal on background click
+        document.getElementById('weekModal').addEventListener('click', (e) => {
+            if (e.target.id === 'weekModal') closeModal();
+        });
+        
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+        
+        // Initialize
+        generateParticles();
+        renderWeeks();
+    </script>
 </body>
-
 </html>
